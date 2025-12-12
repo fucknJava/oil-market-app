@@ -90,9 +90,6 @@ class _CatalogScreenState extends State<CatalogScreen> {
     final productsProvider = Provider.of<ProductsProvider>(context, listen: false);
     String selectedType = productsProvider.types.first;
     String selectedViscosity = productsProvider.viscosities.first;
-    
-    // Используем текущие значения из provider
-    String currentSortBy = productsProvider.sortBy;
 
     showDialog(
       context: context,
@@ -140,24 +137,24 @@ class _CatalogScreenState extends State<CatalogScreen> {
                     const Text('Сортировка:', style: TextStyle(fontWeight: FontWeight.bold)),
                     DropdownButtonFormField<String>(
                       value: _sortBy,
-                      items: [
-                        const DropdownMenuItem(
+                      items: const [
+                        DropdownMenuItem(
                           value: 'default',
                           child: Text('По умолчанию'),
                         ),
-                        const DropdownMenuItem(
+                        DropdownMenuItem(
                           value: 'price_asc',
                           child: Text('По возрастанию цены'),
                         ),
-                        const DropdownMenuItem(
+                        DropdownMenuItem(
                           value: 'price_desc',
                           child: Text('По убыванию цены'),
                         ),
-                        const DropdownMenuItem(
+                        DropdownMenuItem(
                           value: 'name_asc',
                           child: Text('По названию (А-Я)'),
                         ),
-                        const DropdownMenuItem(
+                        DropdownMenuItem(
                           value: 'name_desc',
                           child: Text('По названию (Я-А)'),
                         ),
@@ -199,7 +196,6 @@ class _CatalogScreenState extends State<CatalogScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // Применяем все фильтры и сортировку
                     productsProvider.filterByType(selectedType);
                     productsProvider.filterByViscosity(selectedViscosity);
                     productsProvider.filterByPrice(_priceRangeStart, _priceRangeEnd);

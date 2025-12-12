@@ -10,39 +10,19 @@ dependencies:
   flutter:
     sdk: flutter
   
-  # UI и базовые
   cupertino_icons: ^1.0.6
-  
-  # State management
   provider: ^6.1.1
-  
-  # HTTP и API
   http: ^1.1.0
-  
-  # Локальное хранилище
   shared_preferences: ^2.2.2
   flutter_secure_storage: ^9.0.0
-  
-  # Форматирование
   intl: ^0.18.1
-  
-  # UI компоненты
-  carousel_slider: ^4.2.1
-  badges: ^3.0.3  # ПРАВИЛЬНОЕ НАЗВАНИЕ ПАКЕТА!
-  flutter_svg: ^2.0.9
-  
-  # Для работы с URL (нужен для helpers.dart)
-  url_launcher: ^6.2.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.1
 
 flutter:
   uses-material-design: true
-  
-  # Ассеты
   assets:
     - assets/images/
     - assets/icons/

@@ -9,7 +9,7 @@ class ProductsProvider with ChangeNotifier {
   String _selectedViscosity = 'Все';
   double _minPrice = 0;
   double _maxPrice = 10000;
-  String _sortBy = 'default'; // Добавляем переменную для сортировки
+  String _sortBy = 'default';
   bool _isLoading = false;
 
   List<Product> get products => _filteredProducts;
@@ -35,7 +35,7 @@ class ProductsProvider with ChangeNotifier {
           title: 'Mobil 1 ESP 5W-30',
           description: 'Полностью синтетическое моторное масло с улучшенными характеристиками',
           price: 2999,
-          imageUrl: 'https://via.placeholder.com/300x300?text=Mobil+1',
+          imageUrl: 'https://via.placeholder.com/300',
           type: 'Синтетическое',
           viscosity: '5W-30',
           brand: 'Mobil',
@@ -47,7 +47,7 @@ class ProductsProvider with ChangeNotifier {
           title: 'Castrol Magnatec 5W-40',
           description: 'Масло с технологией магнитной защиты двигателя',
           price: 2499,
-          imageUrl: 'https://via.placeholder.com/300x300?text=Castrol',
+          imageUrl: 'https://via.placeholder.com/300',
           type: 'Синтетическое',
           viscosity: '5W-40',
           brand: 'Castrol',
@@ -59,7 +59,7 @@ class ProductsProvider with ChangeNotifier {
           title: 'Shell Helix HX7 10W-40',
           description: 'Полусинтетическое моторное масло для всех типов двигателей',
           price: 1899,
-          imageUrl: 'https://via.placeholder.com/300x300?text=Shell',
+          imageUrl: 'https://via.placeholder.com/300',
           type: 'Полусинтетическое',
           viscosity: '10W-40',
           brand: 'Shell',
@@ -71,7 +71,7 @@ class ProductsProvider with ChangeNotifier {
           title: 'Lukoil Genesis 5W-30',
           description: 'Синтетическое масло премиум-класса',
           price: 2199,
-          imageUrl: 'https://via.placeholder.com/300x300?text=Lukoil',
+          imageUrl: 'https://via.placeholder.com/300',
           type: 'Синтетическое',
           viscosity: '5W-30',
           brand: 'Lukoil',
@@ -83,7 +83,7 @@ class ProductsProvider with ChangeNotifier {
           title: 'Rosneft Maximum 15W-40',
           description: 'Минеральное масло для старых двигателей',
           price: 1499,
-          imageUrl: 'https://via.placeholder.com/300x300?text=Rosneft',
+          imageUrl: 'https://via.placeholder.com/300',
           type: 'Минеральное',
           viscosity: '15W-40',
           brand: 'Rosneft',
@@ -95,7 +95,7 @@ class ProductsProvider with ChangeNotifier {
           title: 'ZIC X9 0W-20',
           description: 'Синтетическое масло с низкой вязкостью',
           price: 3499,
-          imageUrl: 'https://via.placeholder.com/300x300?text=ZIC',
+          imageUrl: 'https://via.placeholder.com/300',
           type: 'Синтетическое',
           viscosity: '0W-20',
           brand: 'ZIC',
@@ -137,20 +137,18 @@ class ProductsProvider with ChangeNotifier {
   }
 
   void _applyFilters() {
-    // Фильтрация
     _filteredProducts = _products.where((product) {
-      bool matchesSearch = _searchQuery.isEmpty ||
+      final matchesSearch = _searchQuery.isEmpty ||
           product.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           product.brand.toLowerCase().contains(_searchQuery.toLowerCase());
       
-      bool matchesType = _selectedType == 'Все' || product.type == _selectedType;
-      bool matchesViscosity = _selectedViscosity == 'Все' || product.viscosity == _selectedViscosity;
-      bool matchesPrice = product.price >= _minPrice && product.price <= _maxPrice;
+      final matchesType = _selectedType == 'Все' || product.type == _selectedType;
+      final matchesViscosity = _selectedViscosity == 'Все' || product.viscosity == _selectedViscosity;
+      final matchesPrice = product.price >= _minPrice && product.price <= _maxPrice;
       
       return matchesSearch && matchesType && matchesViscosity && matchesPrice;
     }).toList();
     
-    // Сортировка
     switch (_sortBy) {
       case 'price_asc':
         _filteredProducts.sort((a, b) => a.price.compareTo(b.price));
@@ -164,9 +162,7 @@ class ProductsProvider with ChangeNotifier {
       case 'name_desc':
         _filteredProducts.sort((a, b) => b.title.compareTo(a.title));
         break;
-      case 'default':
       default:
-        // По умолчанию - по ID (как в базе)
         _filteredProducts.sort((a, b) => a.id.compareTo(b.id));
         break;
     }

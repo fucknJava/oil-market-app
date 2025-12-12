@@ -54,7 +54,6 @@ class _OrderScreenState extends State<OrderScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Информация о заказе
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
@@ -107,10 +106,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 20),
-
-              // Контактные данные
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
@@ -175,10 +171,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 20),
-
-              // Способ доставки
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
@@ -249,10 +242,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 20),
-
-              // Способ оплаты
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
@@ -301,10 +291,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 30),
-
-              // Кнопка оформления
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -332,13 +319,14 @@ class _OrderScreenState extends State<OrderScreen> {
 
     if (_deliveryType != DeliveryType.pickup &&
         _addressController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Введите адрес доставки')),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Введите адрес доставки')),
+        );
+      }
       return;
     }
 
-    // Показать диалог подтверждения
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -359,25 +347,22 @@ class _OrderScreenState extends State<OrderScreen> {
 
     if (confirmed != true) return;
 
-    // Имитация платежа
     final paymentSuccess = await _simulatePayment();
 
     if (paymentSuccess) {
-      // Очистить корзину
       final cartProvider = context.read<CartProvider>();
       cartProvider.clearCart();
 
-      // Показать успешное сообщение
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Заказ успешно оформлен!'),
-          backgroundColor: Colors.green,
-        ),
-      );
-
-      // Вернуться на главную
-      Navigator.of(context).popUntil((route) => route.isFirst);
-    } else {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Заказ успешно оформлен!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      }
+    } else if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Ошибка оплаты. Попробуйте еще раз.'),
@@ -388,8 +373,7 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Future<bool> _simulatePayment() async {
-    // Имитация процесса оплаты
     await Future.delayed(const Duration(seconds: 2));
-    return true; // Всегда успешно для демонстрации
+    return true;
   }
 }

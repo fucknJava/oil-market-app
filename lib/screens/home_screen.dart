@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
 import '../providers/products_provider.dart';
 import '../widgets/product_card.dart';
 import 'catalog_screen.dart';
@@ -17,7 +18,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-  final TextEditingController _searchController = TextEditingController();
 
   final List<Widget> _screens = [
     const HomeContent(),
@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
+    final authProvider = context.watch<AuthProvider>();
     
     return Scaffold(
       appBar: _selectedIndex == 0
@@ -45,8 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 IconButton(
                   icon: const Icon(Icons.store, color: Colors.white),
                   onPressed: () {
-                    // Информация о магазине
-                    _showStoreInfo();
+                    _showStoreInfo(context);
                   },
                 ),
               ],
@@ -91,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _showStoreInfo() {
+  void _showStoreInfo(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -147,7 +146,6 @@ class HomeContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Баннер
           Container(
             height: 200,
             decoration: BoxDecoration(
@@ -192,8 +190,6 @@ class HomeContent extends StatelessWidget {
               ],
             ),
           ),
-
-          // Поиск
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: TextField(
@@ -209,10 +205,7 @@ class HomeContent extends StatelessWidget {
               },
             ),
           ),
-
           const SizedBox(height: 20),
-
-          // Категории
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
@@ -259,10 +252,7 @@ class HomeContent extends StatelessWidget {
               ],
             ),
           ),
-
           const SizedBox(height: 20),
-
-          // Популярные товары
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
@@ -293,7 +283,6 @@ class HomeContent extends StatelessWidget {
               ],
             ),
           ),
-
           const SizedBox(height: 20),
         ],
       ),

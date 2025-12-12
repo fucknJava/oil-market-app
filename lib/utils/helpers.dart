@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:developer' as developer;
 
 class AppHelpers {
   // Форматирование цены
@@ -83,7 +84,9 @@ class AppHelpers {
 
   // Обработка ошибок сети
   static String getNetworkErrorMessage(dynamic error) {
-    if (error is String) return error;
+    if (error is String) {
+      return error;
+    }
     
     final errorString = error.toString().toLowerCase();
     if (errorString.contains('timeout')) {
@@ -98,7 +101,6 @@ class AppHelpers {
       return 'Произошла ошибка. Попробуйте еще раз.';
     }
   }
-
   // Сокращение длинного текста
   static String truncateText(String text, int maxLength) {
     if (text.length <= maxLength) return text;

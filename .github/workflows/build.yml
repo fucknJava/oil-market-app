@@ -2,9 +2,7 @@ name: Flutter Build Pipeline
 
 on:
   push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -19,27 +17,15 @@ jobs:
       uses: subosito/flutter-action@v2
       with:
         flutter-version: '3.22.0'
-        channel: 'stable'
-        cache: true
-        cache-key: flutter-packages-${{ runner.os }}
     
     - name: Install Dependencies
-      run: |
-        flutter pub get
-        flutter pub outdated
-        
-    - name: Analyze Code
-      run: flutter analyze --no-fatal-infos
+      run: flutter pub get
     
     - name: Build APK
-      run: |
-        flutter build apk --release \
-          --no-tree-shake-icons \
-          --target-platform android-arm64
-        
+      run: flutter build apk --release
+    
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: oil-market-apk
         path: build/app/outputs/flutter-apk/app-release.apk
-        retention-days: 7

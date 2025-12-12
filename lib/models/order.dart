@@ -1,3 +1,5 @@
+import 'product.dart';
+
 enum DeliveryType { pickup, city, russia }
 enum PaymentMethod { card, cashOnDelivery, cardOnDelivery }
 
@@ -15,7 +17,7 @@ class Order {
   final String customerPhone;
   final String customerEmail;
 
-  Order({
+  const Order({
     required this.id,
     required this.userId,
     required this.items,
@@ -36,7 +38,7 @@ class OrderItem {
   final int quantity;
   final double price;
 
-  OrderItem({
+  const OrderItem({
     required this.product,
     required this.quantity,
     required this.price,
