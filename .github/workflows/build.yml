@@ -1,0 +1,92 @@
+name: Flutter Build Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:  # Позволяет запускать вручную
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Полная история для анализа изменений
+    
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+    
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.22.0'
+        channel: 'stable'
+        cache: true
+        cache-key: flutter-packages-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+    
+    - name: Install Dependencies
+      run: flutter pub get
+    
+    - name: Analyze Code
+      run: flutter analyze
+    
+    - name: Run Tests
+      run: flutter test
+    
+    - name: Build APK
+      run: flutter build apk --release --target-platform android-arm,android-arm64,android-x64
+    
+    - name: Build App Bundle
+      run: flutter build appbundle --release
+    
+    - name: Generate Build Info
+      run: |
+        echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
+        echo "GIT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+        echo "RUN_ID=${GITHUB_RUN_ID}" >> $GITHUB_ENV
+    
+    - name: Upload APK Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: oil-market-apk
+        path: build/app/outputs/flutter-apk/app-release.apk
+        retention-days: 7
+    
+    - name: Upload App Bundle Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: oil-market-aab
+        path: build/app/outputs/bundle/release/app-release.aab
+        retention-days: 7
+    
+    - name: Create Release
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          build/app/outputs/flutter-apk/app-release.apk
+          build/app/outputs/bundle/release/app-release.aab
+        tag_name: v1.0.0-${{ github.run_number }}
+        name: Release v1.0.0 Build ${{ github.run_number }}
+        body: |
+          🚀 Автоматическая сборка Oil Market
+          
+          📊 Информация о сборке:
+          - Дата: ${{ env.BUILD_DATE }}
+          - Коммит: ${{ env.GIT_SHA }}
+          - ID сборки: ${{ env.RUN_ID }}
+          
+          📱 Файлы:
+          - `app-release.apk` - для установки на устройство
+          - `app-release.aab` - для загрузки в Google Play
+          
+          ⚙️ Собранно с Flutter 3.22.0
+        draft: false
+        prerelease: false

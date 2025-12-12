@@ -1,0 +1,29 @@
+name: Flutter Tests
+
+on:
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.22.0'
+    
+    - name: Install Dependencies
+      run: flutter pub get
+    
+    - name: Analyze Code
+      run: flutter analyze
+    
+    - name: Run Unit Tests
+      run: flutter test
+    
+    - name: Check Format
+      run: flutter format --set-exit-if-changed .
